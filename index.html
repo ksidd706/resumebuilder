@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AI Resume Builder — ATS Pro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#fafaf8;--bg2:#f3f2ee;--bg3:#eceae4;--bgw:#ffffff;
+  --text:#18181a;--text2:#5c5b57;--text3:#9b9a94;
+  --accent:#1a3a2a;--accent2:#2d6a4f;--accent-light:#e8f4ee;
+  --gold:#b8860b;--gold-light:#fdf6e3;
+  --danger:#c0392b;--danger-light:#fdf0ee;
+  --warn:#d4760a;--warn-light:#fef6e4;
+  --info:#1a5276;--info-light:#eaf2fb;
+  --border:rgba(0,0,0,0.09);--border2:rgba(0,0,0,0.16);--border3:rgba(0,0,0,0.28);
+  --r:8px;--rlg:14px;--rxl:20px;
+  --font:'DM Sans',system-ui,sans-serif;--font-serif:'DM Serif Display',Georgia,serif;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 12px rgba(0,0,0,0.04);
+  --shadow-lg:0 4px 20px rgba(0,0,0,0.1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+
+/* ── HEADER ── */
+header{
+  height:54px;background:var(--accent);display:flex;align-items:center;
+  justify-content:space-between;padding:0 1.5rem;flex-shrink:0;position:relative;z-index:20;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:28px;height:28px;background:var(--accent2);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:15px;color:#fff;font-style:italic}
+.logo-text{font-size:15px;font-weight:600;color:#fff;letter-spacing:-0.02em}
+.logo-text span{font-weight:300;opacity:0.7}
+.header-right{display:flex;align-items:center;gap:10px}
+.ats-badge{background:rgba(255,255,255,0.15);color:#fff;border:1px solid rgba(255,255,255,0.25);font-size:11px;padding:4px 10px;border-radius:20px;font-weight:500}
+.score-header-pill{background:var(--accent2);color:#fff;font-size:12px;font-weight:600;padding:5px 14px;border-radius:20px;cursor:pointer;transition:background 0.2s}
+.score-header-pill:hover{background:#3a8a65}
+
+/* ── APP LAYOUT ── */
+.app{display:grid;grid-template-columns:400px 1fr;height:calc(100vh - 54px)}
+
+/* ── LEFT PANEL ── */
+.left{background:var(--bgw);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden}
+.tab-bar{display:flex;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;flex-shrink:0;background:var(--bg2)}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab{padding:10px 13px;font-size:11.5px;font-weight:500;color:var(--text2);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.15s;user-select:none;position:relative}
+.tab:hover{color:var(--text);background:rgba(0,0,0,0.03)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);background:var(--bgw)}
+.tab .dot{width:5px;height:5px;background:#22c55e;border-radius:50%;display:inline-block;margin-left:4px;vertical-align:middle}
+.panel{flex:1;overflow-y:auto;padding:1.25rem}
+
+/* ── FORM ELEMENTS ── */
+.sec-hd{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:12px;margin-top:4px}
+.field-label{display:block;font-size:11.5px;color:var(--text2);margin-bottom:4px;margin-top:12px;font-weight:500}
+.field-label:first-child{margin-top:0}
+input,textarea,select{
+  width:100%;padding:8px 10px;font-size:13px;border:1px solid var(--border2);
+  border-radius:var(--r);background:var(--bgw);color:var(--text);font-family:var(--font);
+  transition:border-color 0.15s,box-shadow 0.15s;
+}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent2);box-shadow:0 0 0 3px rgba(45,106,79,0.12)}
+textarea{resize:vertical;line-height:1.55;min-height:72px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+
+/* ── BUTTONS ── */
+.btn{padding:8px 14px;font-size:12.5px;border:1px solid var(--border2);border-radius:var(--r);background:var(--bgw);color:var(--text);font-family:var(--font);cursor:pointer;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;font-weight:500}
+.btn:hover{background:var(--bg2);border-color:var(--border3)}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn-full{width:100%;justify-content:center;margin-top:8px}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn-primary:hover{background:var(--accent2);border-color:var(--accent2)}
+.btn-gold{background:var(--gold);color:#fff;border-color:var(--gold)}
+.btn-gold:hover{opacity:0.9}
+.btn-sm{padding:5px 10px;font-size:11.5px}
+.spin{width:12px;height:12px;border:1.5px solid rgba(255,255,255,0.4);border-top-color:currentColor;border-radius:50%;animation:sp 0.6s linear infinite;display:none;flex-shrink:0}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ── CARDS ── */
+.entry-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--rlg);padding:12px;margin-bottom:10px;position:relative;transition:border-color 0.2s}
+.entry-card:hover{border-color:var(--border2)}
+.entry-card input,entry-card textarea{background:var(--bgw)}
+.del-btn{position:absolute;top:10px;right:12px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;line-height:1;padding:2px;transition:color 0.15s}
+.del-btn:hover{color:var(--danger)}
+.add-btn{width:100%;padding:9px;font-size:12px;border:1px dashed var(--border2);background:transparent;color:var(--text2);border-radius:var(--r);cursor:pointer;margin-top:6px;transition:all 0.15s;font-family:var(--font)}
+.add-btn:hover{background:var(--bg2);border-color:var(--border3)}
+
+/* ── CHIPS ── */
+.chip-row{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.chip{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:3px 10px;font-size:11.5px;color:var(--text);display:flex;align-items:center;gap:3px;transition:all 0.15s}
+.chip button{background:none;border:none;cursor:pointer;color:var(--text3);font-size:13px;line-height:1;padding:0;transition:color 0.15s}
+.chip button:hover{color:var(--danger)}
+.chip.match{background:var(--accent-light);border-color:var(--accent2);color:var(--accent)}
+.chip.missing{background:var(--danger-light);border-color:#e8a09a;color:var(--danger)}
+.chip.warn-chip{background:var(--warn-light);border-color:#f0b96a;color:var(--warn)}
+
+/* ── SKILL INPUT ── */
+.skill-row{display:flex;gap:6px}
+.skill-row input{flex:1}
+.skill-row .btn{white-space:nowrap}
+
+/* ── RIGHT PANEL ── */
+.right{display:flex;flex-direction:column;overflow:hidden;background:var(--bg2)}
+.right-top{display:flex;align-items:center;justify-content:space-between;padding:10px 1.25rem;background:var(--bgw);border-bottom:1px solid var(--border);flex-shrink:0;gap:8px}
+.rtabs{display:flex;gap:6px}
+.rtab{padding:6px 14px;font-size:12px;font-weight:500;border:1px solid var(--border);border-radius:20px;cursor:pointer;background:transparent;color:var(--text2);transition:all 0.15s;font-family:var(--font)}
+.rtab:hover{border-color:var(--border2);color:var(--text)}
+.rtab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.right-content{flex:1;overflow-y:auto;padding:1.25rem}
+
+/* ── RESUME PREVIEW ── */
+.resume-shell{background:#d0cec8;padding:1.5rem;border-radius:var(--rlg);min-height:500px}
+.resume-paper{background:#fff;box-shadow:var(--shadow-lg);border-radius:4px;padding:2.5rem 2.8rem;font-family:Georgia,'Times New Roman',serif;font-size:10.5px;line-height:1.6;color:#1a1a1a;position:relative}
+.r-name{font-size:24px;font-weight:700;color:#0d0d0d;font-family:'DM Sans',sans-serif;letter-spacing:-0.025em;margin-bottom:2px}
+.r-title{font-size:13px;color:#444;font-family:'DM Sans',sans-serif;margin-bottom:8px;font-weight:400}
+.r-contact{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:9.5px;color:#555;font-family:'DM Sans',sans-serif;margin-bottom:14px}
+.r-contact a{color:#555;text-decoration:none}
+.r-divider{border:none;border-top:2px solid #0d0d0d;margin-bottom:12px}
+.r-sec{margin-bottom:14px}
+.r-sec-h{font-size:8.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#222;font-family:'DM Sans',sans-serif;border-bottom:0.75px solid #bbb;padding-bottom:3px;margin-bottom:8px}
+.r-sum{font-size:10.5px;color:#2a2a2a;line-height:1.7}
+.r-entry{margin-bottom:10px}
+.r-eh{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.r-et{font-weight:700;font-size:11px;font-family:'DM Sans',sans-serif;color:#0d0d0d}
+.r-ed{font-size:9.5px;color:#666;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.r-es{font-size:10px;color:#555;font-family:'DM Sans',sans-serif;font-style:italic;margin-bottom:3px}
+.r-ul{list-style:disc;padding-left:15px}
+.r-ul li{font-size:10px;color:#2a2a2a;margin-bottom:2.5px;line-height:1.55}
+.r-stags{display:flex;flex-wrap:wrap;gap:3px}
+.r-stag{font-size:9.5px;font-family:'DM Sans',sans-serif;color:#2a2a2a}
+.r-stag::after{content:' ·';color:#999;margin-left:2px}
+.r-stag:last-child::after{content:''}
+.r-cert{font-size:10px;color:#2a2a2a;font-family:'DM Sans',sans-serif}
+.r-lang{font-size:10px;color:#2a2a2a;font-family:'DM Sans',sans-serif}
+.r-vol{font-size:10px;color:#2a2a2a;font-family:'DM Sans',sans-serif}
+
+/* ── ATS PANEL ── */
+.ats-panel{display:flex;flex-direction:column;gap:12px}
+.score-card{background:var(--bgw);border-radius:var(--rlg);border:1px solid var(--border);padding:1.25rem;box-shadow:var(--shadow)}
+.score-row{display:flex;align-items:center;gap:1.25rem}
+.score-donut{position:relative;width:90px;height:90px;flex-shrink:0}
+.score-donut svg{width:90px;height:90px;transform:rotate(-90deg)}
+.score-donut .track{fill:none;stroke:var(--bg3);stroke-width:7}
+.score-donut .fill{fill:none;stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset 0.6s ease,stroke 0.4s}
+.score-num{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:22px;font-weight:700;line-height:1}
+.score-grade{font-size:10px;font-weight:500;margin-top:2px}
+.score-meta h3{font-size:15px;font-weight:600;margin-bottom:4px}
+.score-meta p{font-size:12px;color:var(--text2);line-height:1.5}
+.score-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.breakdown-item{background:var(--bg2);border-radius:var(--r);padding:8px 10px}
+.breakdown-label{font-size:10.5px;color:var(--text2);margin-bottom:3px}
+.breakdown-bar{height:4px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.breakdown-fill{height:100%;border-radius:2px;transition:width 0.5s}
+.breakdown-val{font-size:12px;font-weight:600;margin-top:3px}
+
+.ats-section{background:var(--bgw);border-radius:var(--rlg);border:1px solid var(--border);padding:1rem 1.25rem;box-shadow:var(--shadow)}
+.ats-section-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px}
+.check-row{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px}
+.check-row:last-child{border-bottom:none}
+.check-icon{width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;margin-top:1px}
+.check-icon.pass{background:#dcfce7;color:#15803d}
+.check-icon.fail{background:#fee2e2;color:#dc2626}
+.check-icon.warn{background:#fef3c7;color:#d97706}
+.check-detail{flex:1}
+.check-detail strong{display:block;font-size:12px}
+.check-detail span{font-size:11px;color:var(--text2)}
+
+.kw-grid{display:flex;flex-wrap:wrap;gap:5px}
+.kw-chip{padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:500}
+.kw-chip.found{background:var(--accent-light);color:var(--accent);border:1px solid var(--accent2)}
+.kw-chip.miss{background:var(--danger-light);color:var(--danger);border:1px solid #e8a09a}
+
+.insight-row{display:flex;gap:8px;padding:7px 0;border-bottom:1px solid var(--border);font-size:12.5px;align-items:flex-start}
+.insight-row:last-child{border-bottom:none}
+.insight-tag{font-size:10px;font-weight:600;padding:2px 7px;border-radius:4px;white-space:nowrap;margin-top:2px;flex-shrink:0}
+.tag-fix{background:#fee2e2;color:#dc2626}
+.tag-boost{background:#fef3c7;color:#d97706}
+.tag-good{background:#dcfce7;color:#15803d}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;background:var(--accent);color:#fff;padding:10px 18px;border-radius:var(--r);font-size:13px;z-index:1000;animation:slideup 0.25s ease;box-shadow:var(--shadow-lg);pointer-events:none;max-width:320px}
+@keyframes slideup{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── INFO BOXES ── */
+.info-box{background:var(--info-light);border:1px solid #a9cceb;border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--info);margin-top:8px;line-height:1.6}
+.warn-box{background:var(--warn-light);border:1px solid #f0b96a;border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--warn);margin-top:8px;line-height:1.6}
+.success-box{background:var(--accent-light);border:1px solid var(--accent2);border-radius:var(--r);padding:10px 12px;font-size:12px;color:var(--accent);margin-top:8px;line-height:1.6}
+
+/* ── PROGRESS STEPS ── */
+.jd-steps{display:flex;gap:0;margin-bottom:14px}
+.jd-step{flex:1;text-align:center;font-size:10.5px;color:var(--text3);padding:6px 4px;border-bottom:2px solid var(--border);position:relative}
+.jd-step.done{color:var(--accent2);border-bottom-color:var(--accent2);font-weight:500}
+.jd-step.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:3rem 1.5rem;color:var(--text2);line-height:1.8}
+.empty-icon{font-size:36px;margin-bottom:12px;opacity:0.4}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:10px}
+
+@media(max-width:960px){
+  .app{grid-template-columns:1fr}
+  html,body{height:auto;overflow:auto}
+  .right{height:80vh}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">R</div>
+    <div class="logo-text">Resume<span>Pro</span> AI</div>
+  </div>
+  <div class="header-right">
+    <div class="ats-badge">ATS Optimized</div>
+    <div class="score-header-pill" onclick="switchRight('ats')">Score: <span id="headerScore">—</span></div>
+  </div>
+</header>
+
+<div class="app">
+  <div class="left">
+    <div class="tab-bar" id="tabBar">
+      <div class="tab active" onclick="switchTab('jd')">Target Role</div>
+      <div class="tab" onclick="switchTab('basics')">Basics</div>
+      <div class="tab" onclick="switchTab('summary')">Summary</div>
+      <div class="tab" onclick="switchTab('exp')">Experience</div>
+      <div class="tab" onclick="switchTab('edu')">Education</div>
+      <div class="tab" onclick="switchTab('skills')">Skills</div>
+      <div class="tab" onclick="switchTab('extras')">Extras</div>
+    </div>
+    <div class="panel" id="panelContent"></div>
+  </div>
+
+  <div class="right">
+    <div class="right-top">
+      <div class="rtabs">
+        <div class="rtab active" onclick="switchRight('preview')">Preview</div>
+        <div class="rtab" onclick="switchRight('ats')">ATS Score</div>
+        <div class="rtab" onclick="switchRight('insights')">Insights</div>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="fullOptimize()" id="optimizeBtn">
+        <div class="spin" id="optimizeSpin" style="border-top-color:#fff"></div>
+        <span id="optimizeLabel">✦ Full Optimize</span>
+      </button>
+    </div>
+    <div class="right-content" id="rightContent"></div>
+  </div>
+</div>
+<script>
+// ═══════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════
+const S = {
+  tab:'jd', rightTab:'preview',
+  jd:'', jdRole:'', jdCompany:'', jdSeniority:'', jdIndustry:'',
+  jdKeywords:[], jdSoftSkills:[], jdRequirements:[],
+  basics:{name:'',title:'',email:'',phone:'',location:'',linkedin:'',website:'',github:''},
+  summary:'',
+  experience:[],
+  education:[],
+  skills:[],
+  certifications:[],
+  languages:[],
+  volunteer:[],
+  projects:[],
+  awards:'',
+  atsScore:0,
+};
+
+const TABS = ['jd','basics','summary','exp','edu','skills','extras'];
+
+// ═══════════════════════════════════════════════
+//  UTILS
+// ═══════════════════════════════════════════════
+function h(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function el(id){return document.getElementById(id)}
+function toast(msg,type=''){
+  const t=document.createElement('div');
+  t.className='toast';t.textContent=msg;
+  if(type==='error')t.style.background='#c0392b';
+  document.body.appendChild(t);
+  setTimeout(()=>t.remove(),3000);
+}
+function setBtn(id,spinId,labelId,loading,loadTxt,idleTxt){
+  const b=el(id),s=el(spinId),l=el(labelId);
+  if(b)b.disabled=loading;
+  if(s)s.style.display=loading?'block':'none';
+  if(l)l.textContent=loading?loadTxt:idleTxt;
+}
+
+// ═══════════════════════════════════════════════
+//  API
+// ═══════════════════════════════════════════════
+async function callClaude(messages,system,max_tokens=2000){
+  const res=await fetch('/.netlify/functions/claude',{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({messages,system,max_tokens})
+  });
+  if(!res.ok)throw new Error('API '+res.status);
+  const d=await res.json();
+  return d.content?.find(b=>b.type==='text')?.text||'';
+}
+function parseJSON(txt){
+  try{return JSON.parse(txt.replace(/```json|```/g,'').trim())}
+  catch(e){return null}
+}
+
+// ═══════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════
+function switchTab(t){
+  S.tab=t;
+  document.querySelectorAll('.tab').forEach((e,i)=>e.classList.toggle('active',TABS[i]===t));
+  renderLeft();
+}
+function switchRight(t){
+  S.rightTab=t;
+  document.querySelectorAll('.rtab').forEach((e,i)=>e.classList.toggle('active',['preview','ats','insights'][i]===t));
+  renderRight();
+}
+function renderAll(){renderLeft();renderRight();updateHeaderScore()}
+function renderRight(){
+  if(S.rightTab==='preview')renderPreview();
+  else if(S.rightTab==='ats')renderATSPanel();
+  else renderInsights();
+}
+
+// ═══════════════════════════════════════════════
+//  LEFT PANELS
+// ═══════════════════════════════════════════════
+function renderLeft(){
+  const map={jd:tplJD,basics:tplBasics,summary:tplSummary,exp:tplExp,edu:tplEdu,skills:tplSkills,extras:tplExtras};
+  el('panelContent').innerHTML=(map[S.tab]||tplJD)();
+}
+
+function tplJD(){
+  const kwHtml=S.jdKeywords.length?`
+    <div style="margin-top:16px">
+      <div class="sec-hd">Hard skills & keywords (${S.jdKeywords.length})</div>
+      <div class="chip-row">${S.jdKeywords.map(k=>`<div class="chip">${h(k)}</div>`).join('')}</div>
+    </div>
+    <div style="margin-top:12px">
+      <div class="sec-hd">Soft skills (${S.jdSoftSkills.length})</div>
+      <div class="chip-row">${S.jdSoftSkills.map(k=>`<div class="chip warn-chip">${h(k)}</div>`).join('')}</div>
+    </div>
+    <div style="margin-top:12px">
+      <div class="sec-hd">Key requirements</div>
+      <ul style="padding-left:16px;font-size:12.5px;color:var(--text2);line-height:1.8">
+        ${S.jdRequirements.map(r=>`<li>${h(r)}</li>`).join('')}
+      </ul>
+    </div>
+    <div class="success-box" style="margin-top:14px">
+      ✓ Job analysed. Use <strong>✦ Full Optimize</strong> (top right) to auto-tailor your entire resume, or go tab-by-tab to customize each section.
+    </div>
+    <button class="btn btn-gold btn-full" onclick="fullOptimize()" id="tailorBtn2">
+      <div class="spin" id="tailorSpin2" style="border-top-color:#fff"></div>
+      <span id="tailorLabel2">✦ Auto-tailor entire resume to this role</span>
+    </button>` : '';
+
+  return `
+    <div class="sec-hd">Step 1 — target role</div>
+    <div class="two">
+      <div><span class="field-label">Job title</span><input value="${h(S.jdRole)}" oninput="S.jdRole=this.value" placeholder="e.g. Senior PM"/></div>
+      <div><span class="field-label">Company (optional)</span><input value="${h(S.jdCompany)}" oninput="S.jdCompany=this.value" placeholder="e.g. Google"/></div>
+    </div>
+    <div class="two" style="margin-top:8px">
+      <div>
+        <span class="field-label">Seniority</span>
+        <select onchange="S.jdSeniority=this.value">
+          <option value="">Select...</option>
+          ${['Entry level','Mid level','Senior','Lead','Manager','Director','VP','C-Suite'].map(s=>`<option ${S.jdSeniority===s?'selected':''}>${s}</option>`).join('')}
+        </select>
+      </div>
+      <div>
+        <span class="field-label">Industry</span>
+        <input value="${h(S.jdIndustry)}" oninput="S.jdIndustry=this.value" placeholder="e.g. FinTech, Healthcare"/>
+      </div>
+    </div>
+    <span class="field-label" style="margin-top:14px">Job description</span>
+    <textarea id="jdArea" style="min-height:200px" placeholder="Paste the complete job posting here. The more detail, the better your resume will be optimised...">${h(S.jd)}</textarea>
+    <button class="btn btn-primary btn-full" onclick="analyseJD()" id="jdBtn">
+      <div class="spin" id="jdSpin" style="border-top-color:#fff"></div>
+      <span id="jdLabel">✦ Analyse job & extract requirements</span>
+    </button>
+    ${kwHtml}`;
+}
+
+function tplBasics(){
+  const b=S.basics;
+  return `
+    <div class="sec-hd">Personal information</div>
+    <span class="field-label">Full name</span><input value="${h(b.name)}" oninput="S.basics.name=this.value;debounceRight()" placeholder="Jane Smith"/>
+    <span class="field-label">Professional headline</span>
+    <input value="${h(b.title)}" oninput="S.basics.title=this.value;debounceRight()" placeholder="${S.jdRole||'Senior Product Manager'}"/>
+    ${S.jdRole?`<div class="info-box" style="margin-top:4px">Tip: align your headline to the exact job title "<strong>${h(S.jdRole)}</strong>" for better ATS matching.</div>`:''}
+    <div class="two">
+      <div><span class="field-label">Email</span><input value="${h(b.email)}" oninput="S.basics.email=this.value;debounceRight()" placeholder="jane@email.com"/></div>
+      <div><span class="field-label">Phone</span><input value="${h(b.phone)}" oninput="S.basics.phone=this.value;debounceRight()" placeholder="+1 555 000 0000"/></div>
+    </div>
+    <span class="field-label">Location (City, State/Province)</span>
+    <input value="${h(b.location)}" oninput="S.basics.location=this.value;debounceRight()" placeholder="Toronto, ON"/>
+    <div class="two">
+      <div><span class="field-label">LinkedIn URL</span><input value="${h(b.linkedin)}" oninput="S.basics.linkedin=this.value;debounceRight()" placeholder="linkedin.com/in/jane"/></div>
+      <div><span class="field-label">Website / Portfolio</span><input value="${h(b.website)}" oninput="S.basics.website=this.value;debounceRight()" placeholder="janesmith.com"/></div>
+    </div>
+    <span class="field-label">GitHub (for tech roles)</span>
+    <input value="${h(b.github)}" oninput="S.basics.github=this.value;debounceRight()" placeholder="github.com/janesmith"/>
+    <div class="info-box" style="margin-top:12px">
+      <strong>ATS tip:</strong> Use a professional email. Avoid special characters in your name field. Include full LinkedIn URL — many ATS systems parse it.
+    </div>`;
+}
+
+function tplSummary(){
+  return `
+    <div class="sec-hd">Professional summary</div>
+    ${S.jdKeywords.length?`<div class="info-box" style="margin-bottom:12px">Include keywords: <strong>${S.jdKeywords.slice(0,5).join(', ')}</strong> and more naturally in your summary for ATS matching.</div>`:''}
+    <span class="field-label">Summary (3–4 sentences)</span>
+    <textarea id="sumArea" style="min-height:120px" oninput="S.summary=this.value;debounceRight()" placeholder="A results-driven professional with X years of experience in...">${h(S.summary)}</textarea>
+    <button class="btn btn-full" onclick="aiWriteSummary()" id="sumBtn">
+      <div class="spin" id="sumSpin"></div><span id="sumLabel">✦ Write with AI</span>
+    </button>
+    ${S.jd?`<button class="btn btn-primary btn-full" onclick="aiTailorSummary()" id="sumJDBtn">
+      <div class="spin" id="sumJDSpin" style="border-top-color:#fff"></div><span id="sumJDLabel">✦ Tailor to job description</span>
+    </button>`:''}
+    <div class="warn-box" style="margin-top:10px">
+      <strong>Recruiter tip:</strong> Lead with your strongest achievement or most relevant credential. Keep to 3–4 sentences. ATS ranks resumes higher when the summary mirrors the job title and top 3 keywords.
+    </div>`;
+}
+
+function tplExp(){
+  const cards=S.experience.map((e,i)=>`
+    <div class="entry-card">
+      <button class="del-btn" onclick="delItem('experience',${i})">×</button>
+      <div class="two">
+        <div><span class="field-label">Job title</span><input value="${h(e.title)}" oninput="S.experience[${i}].title=this.value;debounceRight()" placeholder="Product Manager"/></div>
+        <div><span class="field-label">Company</span><input value="${h(e.company)}" oninput="S.experience[${i}].company=this.value;debounceRight()" placeholder="Acme Corp"/></div>
+      </div>
+      <div class="two">
+        <div><span class="field-label">Location</span><input value="${h(e.location||'')}" oninput="S.experience[${i}].location=this.value;debounceRight()" placeholder="Remote / Toronto, ON"/></div>
+        <div><span class="field-label">Employment type</span>
+          <select onchange="S.experience[${i}].type=this.value">
+            ${['Full-time','Part-time','Contract','Freelance','Internship'].map(t=>`<option ${(e.type||'Full-time')===t?'selected':''}>${t}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="two">
+        <div><span class="field-label">Start date</span><input value="${h(e.start)}" oninput="S.experience[${i}].start=this.value;debounceRight()" placeholder="Jan 2021"/></div>
+        <div><span class="field-label">End date</span><input value="${h(e.end)}" oninput="S.experience[${i}].end=this.value;debounceRight()" placeholder="Present"/></div>
+      </div>
+      <span class="field-label">Key achievements (one per line — start with action verb + metric)</span>
+      <textarea style="min-height:90px" oninput="S.experience[${i}].bullets=this.value;debounceRight()" placeholder="Led migration to microservices, reducing latency by 42%&#10;Grew revenue by $2.4M by launching 3 new product lines">${h(e.bullets)}</textarea>
+      <button class="btn btn-full ${S.jd?'btn-primary':''}" onclick="aiEnhanceBullets(${i})" id="bulBtn${i}">
+        <div class="spin" id="bulSpin${i}" style="border-top-color:#fff"></div>
+        <span id="bulLabel${i}">✦ ${S.jd?'Enhance & align to job':'Enhance bullets with AI'}</span>
+      </button>
+    </div>`).join('');
+  return `
+    <div class="sec-hd">Work experience</div>
+    <div class="info-box" style="margin-bottom:12px">
+      <strong>ATS rules:</strong> Use standard job titles (no internal jargon). Always include employer name, dates, and location. Lead bullets with action verbs and quantify impact.
+    </div>
+    ${cards}
+    <button class="add-btn" onclick="addItem('experience')">+ Add position</button>`;
+}
+
+function tplEdu(){
+  const cards=S.education.map((e,i)=>`
+    <div class="entry-card">
+      <button class="del-btn" onclick="delItem('education',${i})">×</button>
+      <span class="field-label">Degree</span>
+      <select onchange="S.education[${i}].degree=this.value;debounceRight()">
+        ${['Bachelor of Science','Bachelor of Arts','Bachelor of Commerce','Master of Science','Master of Arts','MBA','Ph.D','Associate Degree','Diploma','Certificate','Other'].map(d=>`<option ${e.degree===d?'selected':''}>${d}</option>`).join('')}
+      </select>
+      <span class="field-label">Field of study</span>
+      <input value="${h(e.field||'')}" oninput="S.education[${i}].field=this.value;debounceRight()" placeholder="Computer Science"/>
+      <div class="two">
+        <div><span class="field-label">Institution</span><input value="${h(e.school)}" oninput="S.education[${i}].school=this.value;debounceRight()" placeholder="University of Toronto"/></div>
+        <div><span class="field-label">Year</span><input value="${h(e.year)}" oninput="S.education[${i}].year=this.value;debounceRight()" placeholder="2019"/></div>
+      </div>
+      <div class="two">
+        <div><span class="field-label">GPA (optional)</span><input value="${h(e.gpa||'')}" oninput="S.education[${i}].gpa=this.value" placeholder="3.8/4.0"/></div>
+        <div><span class="field-label">Honours (optional)</span><input value="${h(e.honours||'')}" oninput="S.education[${i}].honours=this.value" placeholder="Cum Laude"/></div>
+      </div>
+      <span class="field-label">Relevant coursework / thesis (optional)</span>
+      <input value="${h(e.courses||'')}" oninput="S.education[${i}].courses=this.value" placeholder="Machine Learning, Data Structures, Algorithms"/>
+    </div>`).join('');
+  return `
+    <div class="sec-hd">Education</div>
+    <div class="info-box" style="margin-bottom:12px">Include full degree names — ATS often filters by education level. Add relevant coursework if it matches the job requirements.</div>
+    ${cards}
+    <button class="add-btn" onclick="addItem('education')">+ Add degree / credential</button>`;
+}
+
+function tplSkills(){
+  const chips=S.skills.map((s,i)=>{
+    const isMatch=S.jdKeywords.some(k=>k.toLowerCase()===s.toLowerCase());
+    const isSoft=S.jdSoftSkills.some(k=>k.toLowerCase()===s.toLowerCase());
+    let cls=isMatch?'match':isSoft?'warn-chip':'';
+    return `<div class="chip ${cls}">${h(s)}<button onclick="delSkill(${i})">×</button></div>`;
+  }).join('');
+  return `
+    <div class="sec-hd">Skills</div>
+    ${S.jdKeywords.length?`<div class="info-box" style="margin-bottom:10px">Green = matches job keywords · Orange = soft skill match. Add all green keywords from the Target Role tab that genuinely apply to you.</div>`:''}
+    <div class="skill-row">
+      <input id="skInp" placeholder="Add a skill, tool or technology..." onkeydown="if(event.key==='Enter'){addSkill();event.preventDefault()}"/>
+      <button class="btn" onclick="addSkill()">Add</button>
+    </div>
+    <div class="chip-row">${chips}</div>
+    <button class="btn btn-full ${S.jd?'btn-primary':''}" onclick="aiSuggestSkills()" id="skBtn">
+      <div class="spin" id="skSpin" style="border-top-color:#fff"></div>
+      <span id="skLabel">✦ ${S.jd?'Suggest skills aligned to job':'Suggest skills from experience'}</span>
+    </button>
+    ${S.jdKeywords.length?`
+    <button class="btn btn-full" style="margin-top:6px" onclick="addMissingKeywords()">+ Add all missing job keywords</button>`:''}
+    <div class="warn-box" style="margin-top:10px">
+      <strong>ATS tip:</strong> List skills exactly as written in the job description. Include both spelled-out and abbreviated forms (e.g. "Artificial Intelligence (AI)"). Group by category: Technical → Tools → Soft Skills.
+    </div>`;
+}
+
+function tplExtras(){
+  const certs=S.certifications.map((c,i)=>`
+    <div class="entry-card">
+      <button class="del-btn" onclick="delItem('certifications',${i})">×</button>
+      <div class="two">
+        <div><span class="field-label">Certification name</span><input value="${h(c.name||'')}" oninput="S.certifications[${i}].name=this.value;debounceRight()" placeholder="AWS Solutions Architect"/></div>
+        <div><span class="field-label">Issuing body</span><input value="${h(c.issuer||'')}" oninput="S.certifications[${i}].issuer=this.value;debounceRight()" placeholder="Amazon Web Services"/></div>
+      </div>
+      <div class="two">
+        <div><span class="field-label">Date / Year</span><input value="${h(c.date||'')}" oninput="S.certifications[${i}].date=this.value" placeholder="2023"/></div>
+        <div><span class="field-label">Credential ID (optional)</span><input value="${h(c.id||'')}" oninput="S.certifications[${i}].id=this.value" placeholder="ABC-12345"/></div>
+      </div>
+    </div>`).join('');
+
+  const projs=S.projects.map((p,i)=>`
+    <div class="entry-card">
+      <button class="del-btn" onclick="delItem('projects',${i})">×</button>
+      <div class="two">
+        <div><span class="field-label">Project name</span><input value="${h(p.name||'')}" oninput="S.projects[${i}].name=this.value;debounceRight()" placeholder="E-commerce Platform"/></div>
+        <div><span class="field-label">URL (optional)</span><input value="${h(p.url||'')}" oninput="S.projects[${i}].url=this.value" placeholder="github.com/jane/project"/></div>
+      </div>
+      <span class="field-label">Description & technologies used</span>
+      <textarea style="min-height:60px" oninput="S.projects[${i}].desc=this.value;debounceRight()" placeholder="Built a scalable e-commerce platform using React, Node.js and PostgreSQL...">${h(p.desc||'')}</textarea>
+    </div>`).join('');
+
+  const langs=S.languages.map((l,i)=>`
+    <div class="entry-card" style="padding:8px 12px">
+      <button class="del-btn" onclick="delItem('languages',${i})">×</button>
+      <div class="two">
+        <div><span class="field-label">Language</span><input value="${h(l.name||'')}" oninput="S.languages[${i}].name=this.value;debounceRight()" placeholder="French"/></div>
+        <div><span class="field-label">Proficiency</span>
+          <select onchange="S.languages[${i}].level=this.value;debounceRight()">
+            ${['Native','Fluent','Advanced','Intermediate','Basic'].map(lv=>`<option ${l.level===lv?'selected':''}>${lv}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+    </div>`).join('');
+
+  return `
+    <div class="sec-hd">Certifications</div>
+    <div class="info-box" style="margin-bottom:8px">Certifications dramatically increase ATS match for technical and regulated roles. Include all relevant credentials.</div>
+    ${certs}<button class="add-btn" onclick="addItem('certifications')">+ Add certification</button>
+
+    <div class="sec-hd" style="margin-top:18px">Projects</div>
+    ${projs}<button class="add-btn" onclick="addItem('projects')">+ Add project</button>
+
+    <div class="sec-hd" style="margin-top:18px">Languages</div>
+    ${langs}<button class="add-btn" onclick="addItem('languages')">+ Add language</button>
+
+    <div class="sec-hd" style="margin-top:18px">Awards & Recognition (optional)</div>
+    <textarea style="min-height:60px" oninput="S.awards=this.value;debounceRight()" placeholder="Dean's List 2018-2019&#10;Hackathon Winner – TechTO 2022">${h(S.awards)}</textarea>`;
+}
+
+// ═══════════════════════════════════════════════
+//  DATA HELPERS
+// ═══════════════════════════════════════════════
+function addItem(arr){
+  const defs={experience:{title:'',company:'',location:'',type:'Full-time',start:'',end:'Present',bullets:''},education:{degree:'Bachelor of Science',field:'',school:'',year:'',gpa:'',honours:'',courses:''},certifications:{name:'',issuer:'',date:'',id:''},projects:{name:'',url:'',desc:''},languages:{name:'',level:'Intermediate'}};
+  S[arr].push({...(defs[arr]||{})});renderLeft();
+}
+function delItem(arr,i){S[arr].splice(i,1);renderAll();}
+function addSkill(){
+  const inp=el('skInp');if(!inp)return;
+  const v=inp.value.trim();
+  if(v&&!S.skills.includes(v)){S.skills.push(v);renderAll();}
+  else{inp.value='';}
+}
+function delSkill(i){S.skills.splice(i,1);renderAll();}
+function addMissingKeywords(){
+  const resumeText=getAllResumeText().toLowerCase();
+  let added=0;
+  [...S.jdKeywords,...S.jdSoftSkills].forEach(k=>{
+    if(!resumeText.includes(k.toLowerCase())&&!S.skills.includes(k)){S.skills.push(k);added++;}
+  });
+  toast(`Added ${added} missing keywords to skills`);renderAll();
+}
+function getAllResumeText(){
+  return[S.basics.name,S.basics.title,S.summary,
+    ...S.experience.map(e=>`${e.title} ${e.company} ${e.bullets}`),
+    ...S.education.map(e=>`${e.degree} ${e.field} ${e.school}`),
+    ...S.skills,...S.certifications.map(c=>c.name),
+    ...S.projects.map(p=>p.desc)].join(' ');
+}
+
+let debTimer=null;
+function debounceRight(){clearTimeout(debTimer);debTimer=setTimeout(()=>{renderRight();updateHeaderScore();},200);}
+
+// ═══════════════════════════════════════════════
+//  ATS SCORING ENGINE
+// ═══════════════════════════════════════════════
+function computeATS(){
+  const rt=getAllResumeText().toLowerCase();
+  const expText=S.experience.map(e=>e.bullets).join(' ');
+
+  // Structural checks (60 pts)
+  const checks={
+    name:{pass:!!S.basics.name,label:'Full name',tip:'Required for parsing'},
+    email:{pass:!!S.basics.email,label:'Email address',tip:'Mandatory contact field'},
+    phone:{pass:!!S.basics.phone,label:'Phone number',tip:'Many ATS require phone'},
+    location:{pass:!!S.basics.location,label:'Location / city',tip:'ATS filter by geography'},
+    linkedin:{pass:!!S.basics.linkedin,label:'LinkedIn profile',tip:'Recruiters verify LinkedIn'},
+    title:{pass:!!S.basics.title,label:'Professional headline',tip:'Should mirror job title'},
+    summary:{pass:S.summary.length>50,label:'Summary (50+ chars)',tip:'ATS weight summary heavily'},
+    summaryKeywords:{pass:S.jdKeywords.length>0&&S.jdKeywords.slice(0,5).some(k=>S.summary.toLowerCase().includes(k.toLowerCase())),label:'Keywords in summary',tip:'Top keywords in summary = big ATS boost'},
+    hasExp:{pass:S.experience.length>0,label:'Work experience added',tip:'Core section'},
+    expDates:{pass:S.experience.every(e=>e.start&&e.end),label:'All experience dates filled',tip:'ATS parse date ranges'},
+    expTitles:{pass:S.experience.every(e=>e.title&&e.company),label:'All job titles & companies',tip:'Required for ATS parsing'},
+    bullets:{pass:S.experience.some(e=>e.bullets.split('\n').filter(l=>l.trim()).length>=2),label:'2+ bullets per role',tip:'ATS scores richness of detail'},
+    metrics:{pass:/\d+(%|x|\+|k|m|\$|million|billion|percent|users|clients|team|member|yr|year)/i.test(expText),label:'Quantified achievements',tip:'Metrics increase recruiter engagement 40%'},
+    actionVerbs:{pass:/^(led|built|grew|drove|launched|delivered|managed|created|designed|developed|implemented|increased|reduced|improved|spearheaded|orchestrated|transformed|generated|achieved|secured|negotiated|partnered|scaled|optimised|streamlined)/im.test(expText),label:'Action verbs in bullets',tip:'ATS & recruiters look for leadership signals'},
+    education:{pass:S.education.length>0,label:'Education section',tip:'Many roles filter by degree'},
+    skills:{pass:S.skills.length>=6,label:'6+ skills listed',tip:'Skills section is key ATS matching field'},
+    skillsCount:{pass:S.skills.length>=12,label:'12+ skills (comprehensive)',tip:'More relevant skills = higher ATS rank'},
+    certifications:{pass:S.certifications.some(c=>c.name),label:'Certifications listed',tip:'Boosts ATS for technical/regulated roles'},
+    noSpecialChars:{pass:!/[★☆•◆▪▶►●]/g.test(getAllResumeText()),label:'No ATS-breaking symbols',tip:'Special chars corrupt ATS parsing'},
+    standardSections:{pass:true,label:'Standard section headers',tip:'Use: Experience, Education, Skills'},
+  };
+
+  // Keyword match (40 pts)
+  let kwFound=[],kwMissing=[];
+  S.jdKeywords.forEach(k=>{
+    if(rt.includes(k.toLowerCase()))kwFound.push(k);else kwMissing.push(k);
+  });
+  let softFound=[],softMissing=[];
+  S.jdSoftSkills.forEach(k=>{
+    if(rt.includes(k.toLowerCase()))softFound.push(k);else softMissing.push(k);
+  });
+
+  const structPts=Object.values(checks).filter(c=>c.pass).length/Object.keys(checks).length*55;
+  const kwPts=S.jdKeywords.length>0?(kwFound.length/S.jdKeywords.length)*30:15;
+  const softPts=S.jdSoftSkills.length>0?(softFound.length/S.jdSoftSkills.length)*15:7;
+  const total=Math.round(structPts+kwPts+softPts);
+
+  return{checks,kwFound,kwMissing,softFound,softMissing,total,
+    structScore:Math.round(structPts/55*100),
+    kwScore:Math.round(kwPts/30*100),
+    softScore:Math.round(softPts/15*100)};
+}
+
+function updateHeaderScore(){
+  const{total}=computeATS();
+  S.atsScore=total;
+  const pill=el('headerScore');
+  if(pill){
+    pill.textContent=total+'/100';
+    const parent=pill.parentElement;
+    if(parent){
+      if(total>=80)parent.style.background='#27ae60';
+      else if(total>=60)parent.style.background='#d4760a';
+      else parent.style.background='#c0392b';
+    }
+  }
+}
+
+function renderATSPanel(){
+  const rc=el('rightContent');
+  const{checks,kwFound,kwMissing,softFound,softMissing,total,structScore,kwScore,softScore}=computeATS();
+  const color=total>=80?'#22c55e':total>=60?'#f59e0b':'#ef4444';
+  const grade=total>=85?'Excellent':total>=75?'Strong':total>=60?'Good':total>=45?'Fair':'Needs Work';
+  const circ=Math.round((total/100)*220);
+
+  const passChecks=Object.values(checks).filter(c=>c.pass).length;
+  const totalChecks=Object.keys(checks).length;
+
+  const checkHTML=Object.entries(checks).map(([k,c])=>{
+    const icon=c.pass?'✓':'✗';
+    const cls=c.pass?'pass':'fail';
+    return`<div class="check-row">
+      <div class="check-icon ${cls}">${icon}</div>
+      <div class="check-detail"><strong>${c.label}</strong><span>${c.tip}</span></div>
+    </div>`;
+  }).join('');
+
+  const kwSection=S.jdKeywords.length===0
+    ?`<div style="font-size:12.5px;color:var(--text2);padding:8px 0">Add a job description in the "Target Role" tab to see keyword matching.</div>`
+    :`<div style="margin-bottom:10px">
+        <div style="font-size:11px;font-weight:600;color:var(--accent2);margin-bottom:6px">Matched (${kwFound.length}/${S.jdKeywords.length})</div>
+        <div class="kw-grid">${kwFound.map(k=>`<span class="kw-chip found">${h(k)}</span>`).join('')||'<span style="color:var(--text3);font-size:12px">None matched yet</span>'}</div>
+      </div>
+      ${kwMissing.length?`<div>
+        <div style="font-size:11px;font-weight:600;color:var(--danger);margin:8px 0 6px">Missing — add to resume</div>
+        <div class="kw-grid">${kwMissing.map(k=>`<span class="kw-chip miss">${h(k)}</span>`).join('')}</div>
+      </div>`:'<div style="color:var(--accent);font-size:12.5px;font-weight:500">✓ All keywords matched!</div>'}
+      ${S.jdSoftSkills.length?`<div style="margin-top:10px">
+        <div style="font-size:11px;font-weight:600;color:var(--warn);margin-bottom:6px">Soft skills missing (${softMissing.length})</div>
+        <div class="kw-grid">${softMissing.map(k=>`<span class="kw-chip" style="background:var(--warn-light);color:var(--warn);border:1px solid #f0b96a">${h(k)}</span>`).join('')}</div>
+      </div>`:''}`;
+
+  rc.innerHTML=`<div class="ats-panel">
+    <div class="score-card">
+      <div class="score-row">
+        <div class="score-donut">
+          <svg viewBox="0 0 90 90">
+            <circle class="track" cx="45" cy="45" r="35"/>
+            <circle class="fill" cx="45" cy="45" r="35"
+              stroke="${color}"
+              stroke-dasharray="220"
+              stroke-dashoffset="${220-circ}"/>
+          </svg>
+          <div class="score-num" style="color:${color}">${total}<div class="score-grade" style="color:${color}">${grade}</div></div>
+        </div>
+        <div class="score-meta">
+          <h3>ATS Match Score</h3>
+          <p>${total>=80?'Your resume is well-optimised for ATS. Focus on recruiter appeal now.':total>=60?'Good foundation. Close keyword gaps and add more metrics.':'Your resume needs significant optimisation before applying.'}</p>
+        </div>
+      </div>
+      <div class="score-breakdown">
+        <div class="breakdown-item">
+          <div class="breakdown-label">Structure & completeness</div>
+          <div class="breakdown-bar"><div class="breakdown-fill" style="width:${structScore}%;background:${structScore>=75?'#22c55e':'#f59e0b'}"></div></div>
+          <div class="breakdown-val">${structScore}/100</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-label">Hard keyword match</div>
+          <div class="breakdown-bar"><div class="breakdown-fill" style="width:${S.jdKeywords.length?kwScore:50}%;background:${kwScore>=75?'#22c55e':'#f59e0b'}"></div></div>
+          <div class="breakdown-val">${S.jdKeywords.length?kwScore+'/100':'N/A'}</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-label">Soft skill match</div>
+          <div class="breakdown-bar"><div class="breakdown-fill" style="width:${S.jdSoftSkills.length?softScore:50}%;background:${softScore>=75?'#22c55e':'#f59e0b'}"></div></div>
+          <div class="breakdown-val">${S.jdSoftSkills.length?softScore+'/100':'N/A'}</div>
+        </div>
+        <div class="breakdown-item">
+          <div class="breakdown-label">Checks passed</div>
+          <div class="breakdown-bar"><div class="breakdown-fill" style="width:${Math.round(passChecks/totalChecks*100)}%;background:#22c55e"></div></div>
+          <div class="breakdown-val">${passChecks}/${totalChecks}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="ats-section">
+      <div class="ats-section-title">Resume checklist (${passChecks}/${totalChecks})</div>
+      ${checkHTML}
+    </div>
+
+    <div class="ats-section">
+      <div class="ats-section-title">Keyword alignment</div>
+      ${kwSection}
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════
+//  INSIGHTS PANEL
+// ═══════════════════════════════════════════════
+function renderInsights(){
+  const rc=el('rightContent');
+  const{checks,kwMissing,total}=computeATS();
+  const expText=S.experience.map(e=>e.bullets).join('\n');
+  const weakBullets=/^(responsible for|worked on|helped with|assisted|duties included)/im.test(expText);
+  const hasMetrics=/\d+(%|x|\+|k|m|\$)/i.test(expText);
+  const bulletCount=expText.split('\n').filter(l=>l.trim()).length;
+  const avgBullets=S.experience.length?Math.round(bulletCount/S.experience.length):0;
+
+  const issues=[];
+  if(!S.basics.title)issues.push({type:'fix',text:'Add a professional headline that matches the target job title',section:'basics'});
+  if(S.summary.length<60)issues.push({type:'fix',text:'Your summary is too short. Write 3–4 sentences highlighting your top value proposition',section:'summary'});
+  if(weakBullets)issues.push({type:'fix',text:'Some bullets start with weak phrases ("responsible for", "helped with"). Replace with strong action verbs',section:'exp'});
+  if(!hasMetrics)issues.push({type:'fix',text:'No quantified metrics found. Add numbers: percentages, revenue, team size, time saved',section:'exp'});
+  if(avgBullets<3&&S.experience.length>0)issues.push({type:'boost',text:`Average ${avgBullets} bullets per role. Aim for 3–5 per position for ATS richness`,section:'exp'});
+  if(S.skills.length<10)issues.push({type:'boost',text:`Only ${S.skills.length} skills listed. Aim for 12–20 to match more ATS filters`,section:'skills'});
+  if(!S.certifications.some(c=>c.name))issues.push({type:'boost',text:'No certifications listed. Even online certs (Coursera, LinkedIn Learning) improve ATS match',section:'extras'});
+  if(!S.basics.linkedin)issues.push({type:'boost',text:'Add your LinkedIn URL — 87% of recruiters verify LinkedIn before interviews',section:'basics'});
+  if(kwMissing.length>5)issues.push({type:'fix',text:`${kwMissing.length} job keywords missing from your resume. Use "Add all missing keywords" in Skills tab`,section:'skills'});
+  if(total>=80&&S.experience.length>0)issues.push({type:'good',text:'Strong ATS score. Your resume is competitive — now focus on recruiter storytelling in bullets',section:''});
+  if(S.experience.some(e=>e.bullets.split('\n').filter(l=>l.trim()).length>=3&&/\d+/.test(e.bullets)))issues.push({type:'good',text:'Great use of metrics in experience bullets — recruiters love quantified achievements',section:''});
+
+  const tipsHTML=`
+    <ul style="padding-left:16px;line-height:2;font-size:12.5px;color:var(--text2)">
+      <li>Mirror the <strong>exact job title</strong> in your headline and summary</li>
+      <li>Use <strong>both spellings</strong> of keywords: "AI (Artificial Intelligence)"</li>
+      <li>File format: <strong>Word .docx or plain PDF</strong> — avoid tables, columns, headers/footers</li>
+      <li>Keep resume to <strong>1–2 pages</strong> — ATS truncate after page 2</li>
+      <li>Standard fonts only: <strong>Arial, Calibri, Times New Roman</strong> at 10–12pt</li>
+      <li>No images, logos, or graphics — ATS cannot parse them</li>
+      <li>Include a <strong>Skills section</strong> using the exact terms from the job posting</li>
+      <li>Repeat important keywords in <strong>multiple sections</strong> (summary, experience, skills)</li>
+    </ul>`;
+
+  rc.innerHTML=`
+    <div class="ats-panel">
+      <div class="ats-section">
+        <div class="ats-section-title">AI insights & fixes</div>
+        ${issues.length===0?'<div style="color:var(--text2);font-size:12.5px;padding:8px 0">Fill in your resume to get personalised insights.</div>':
+        issues.map(i=>`<div class="insight-row">
+          <span class="insight-tag ${i.type==='fix'?'tag-fix':i.type==='boost'?'tag-boost':'tag-good'}">${i.type==='fix'?'Fix':i.type==='boost'?'Boost':'✓ Good'}</span>
+          <span>${i.text}${i.section?` — <a href="#" onclick="switchTab('${i.section}');return false" style="color:var(--accent2);font-size:11.5px">Go to ${i.section}</a>`:''}</span>
+        </div>`).join('')}
+      </div>
+      <div class="ats-section">
+        <div class="ats-section-title">Recruiter appeal checklist</div>
+        ${[
+          ['Opening line grabs attention',S.summary.length>80&&/[A-Z]/.test(S.summary[0])],
+          ['Bullet 1 in each role = strongest achievement',S.experience.some(e=>e.bullets.split('\n')[0]&&/\d/.test(e.bullets.split('\n')[0]))],
+          ['Job titles are industry-standard',S.experience.every(e=>e.title.length>2)],
+          ['Career progression visible',S.experience.length>=2],
+          ['Education matches role requirements',S.education.length>0],
+          ['Skills directly relevant to role',S.jdKeywords.length>0&&S.skills.some(s=>S.jdKeywords.includes(s))],
+          ['Contact info complete & professional',!!(S.basics.email&&S.basics.phone&&S.basics.location)],
+        ].map(([label,pass])=>`<div class="check-row">
+          <div class="check-icon ${pass?'pass':'warn'}">${pass?'✓':'?'}</div>
+          <div class="check-detail"><strong>${label}</strong></div>
+        </div>`).join('')}
+      </div>
+      <div class="ats-section">
+        <div class="ats-section-title">ATS formatting rules</div>
+        ${tipsHTML}
+      </div>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════
+//  PREVIEW
+// ═══════════════════════════════════════════════
+function renderPreview(){
+  const rc=el('rightContent');
+  const b=S.basics;
+  if(!b.name&&!b.email&&S.experience.length===0){
+    rc.innerHTML=`<div class="empty"><div class="empty-icon">📄</div>Your formatted resume will appear here.<br><span style="font-size:12px">Start with your details on the left.</span></div>`;
+    return;
+  }
+  const contact=[b.email,b.phone,b.location,b.linkedin&&`<a href="https://${b.linkedin}">${b.linkedin}</a>`,b.website&&`<a href="https://${b.website}">${b.website}</a>`,b.github&&`<a href="https://${b.github}">${b.github}</a>`].filter(Boolean).join('<span style="color:#bbb;margin:0 4px">|</span>');
+
+  const expSec=S.experience.length===0?'':
+    `<div class="r-sec"><div class="r-sec-h">Professional Experience</div>
+    ${S.experience.map(e=>`<div class="r-entry">
+      <div class="r-eh"><span class="r-et">${h(e.title)}</span><span class="r-ed">${h(e.start)}${e.start&&e.end?' – ':''}${h(e.end)}</span></div>
+      <div class="r-es">${h(e.company)}${e.location?` · ${h(e.location)}`:''}${e.type&&e.type!=='Full-time'?` · ${h(e.type)}`:''}</div>
+      ${e.bullets?`<ul class="r-ul">${e.bullets.split('\n').filter(l=>l.trim()).map(l=>`<li>${h(l.trim())}</li>`).join('')}</ul>`:''}
+    </div>`).join('')}</div>`;
+
+  const projSec=S.projects.filter(p=>p.name).length===0?'':
+    `<div class="r-sec"><div class="r-sec-h">Projects</div>
+    ${S.projects.filter(p=>p.name).map(p=>`<div class="r-entry">
+      <div class="r-eh"><span class="r-et">${h(p.name)}</span>${p.url?`<span class="r-ed">${h(p.url)}</span>`:''}</div>
+      ${p.desc?`<div class="r-vol">${h(p.desc)}</div>`:''}
+    </div>`).join('')}</div>`;
+
+  const eduSec=S.education.length===0?'':
+    `<div class="r-sec"><div class="r-sec-h">Education</div>
+    ${S.education.map(e=>`<div class="r-entry">
+      <div class="r-eh"><span class="r-et">${h(e.degree)}${e.field?` in ${h(e.field)}`:''}</span><span class="r-ed">${h(e.year)}</span></div>
+      <div class="r-es">${h(e.school)}${e.honours?` · ${h(e.honours)}`:''}</div>
+      ${e.gpa?`<div class="r-cert">GPA: ${h(e.gpa)}</div>`:''}
+      ${e.courses?`<div class="r-cert" style="color:#666">Relevant coursework: ${h(e.courses)}</div>`:''}
+    </div>`).join('')}</div>`;
+
+  const certSec=S.certifications.filter(c=>c.name).length===0?'':
+    `<div class="r-sec"><div class="r-sec-h">Certifications</div>
+    ${S.certifications.filter(c=>c.name).map(c=>`<div class="r-cert">${h(c.name)}${c.issuer?` · <em>${h(c.issuer)}</em>`:''} ${c.date?`(${h(c.date)})`:''}${c.id?` · ID: ${h(c.id)}`:''}</div>`).join('')}
+    </div>`;
+
+  const skSec=S.skills.length===0?'':
+    `<div class="r-sec"><div class="r-sec-h">Skills</div>
+    <div class="r-stags">${S.skills.map(s=>`<span class="r-stag">${h(s)}</span>`).join('')}</div></div>`;
+
+  const langSec=S.languages.filter(l=>l.name).length===0?'':
+    `<div class="r-sec"><div class="r-sec-h">Languages</div>
+    <div class="r-lang">${S.languages.filter(l=>l.name).map(l=>`${h(l.name)} (${h(l.level)})`).join(' · ')}</div></div>`;
+
+  const awardSec=S.awards?
+    `<div class="r-sec"><div class="r-sec-h">Awards & Recognition</div>
+    ${S.awards.split('\n').filter(l=>l.trim()).map(l=>`<div class="r-vol">${h(l.trim())}</div>`).join('')}</div>`:'';
+
+  rc.innerHTML=`<div class="resume-shell"><div class="resume-paper">
+    ${b.name?`<div class="r-name">${h(b.name)}</div>`:''}
+    ${b.title?`<div class="r-title">${h(b.title)}</div>`:''}
+    ${contact?`<div class="r-contact">${contact}</div>`:''}
+    <hr class="r-divider"/>
+    ${S.summary?`<div class="r-sec"><div class="r-sec-h">Professional Summary</div><div class="r-sum">${h(S.summary)}</div></div>`:''}
+    ${expSec}${projSec}${skSec}${eduSec}${certSec}${langSec}${awardSec}
+  </div></div>`;
+}
+
+// ═══════════════════════════════════════════════
+//  AI FUNCTIONS
+// ═══════════════════════════════════════════════
+const SYS_ATS=`You are a world-class ATS resume expert and executive recruiter with 20 years of experience. You know exactly what Fortune 500 ATS systems look for and what makes recruiters stop scrolling. Your output is always precise, impactful, and keyword-rich without being spammy. Return only valid JSON unless instructed otherwise.`;
+
+async function analyseJD(){
+  const area=el('jdArea');
+  if(area)S.jd=area.value;
+  if(!S.jd.trim()){toast('Paste a job description first','error');return;}
+  setBtn('jdBtn','jdSpin','jdLabel',true,'Analysing role...','✦ Analyse job & extract requirements');
+  try{
+    const txt=await callClaude([{role:'user',content:`Analyse this job description deeply and extract structured data.\n\nJob description:\n${S.jd}\n\nReturn ONLY this JSON (no markdown):\n{\n  "hardKeywords": ["skill1","tool2",...],\n  "softSkills": ["communication","leadership",...],\n  "requirements": ["5+ years experience in X","Bachelor's degree in Y",...],\n  "seniority": "Senior|Mid|Junior|Manager",\n  "industry": "industry name"\n}\n\nhardKeywords: 15-20 technical skills, tools, technologies, methodologies\nsoftSkills: 8-12 interpersonal/behavioural skills\nrequirements: 6-10 must-have qualifications as written in the JD`}],SYS_ATS);
+    const d=parseJSON(txt);
+    if(d){
+      S.jdKeywords=d.hardKeywords||[];
+      S.jdSoftSkills=d.softSkills||[];
+      S.jdRequirements=d.requirements||[];
+      if(!S.jdSeniority&&d.seniority)S.jdSeniority=d.seniority;
+      if(!S.jdIndustry&&d.industry)S.jdIndustry=d.industry;
+      toast(`✓ Extracted ${S.jdKeywords.length} keywords & ${S.jdRequirements.length} requirements`);
+      renderAll();
+    }else toast('Could not parse response. Try again.','error');
+  }catch(e){toast('Analysis failed. Check connection.','error');}
+  setBtn('jdBtn','jdSpin','jdLabel',false,'','✦ Analyse job & extract requirements');
+}
+
+async function fullOptimize(){
+  if(!S.jd&&S.jdKeywords.length===0){toast('Add a job description first','error');return;}
+  if(S.experience.length===0&&!S.basics.title){toast('Add some experience or basics first','error');return;}
+  setBtn('optimizeBtn','optimizeSpin','optimizeLabel',true,'Optimizing...','✦ Full Optimize');
+  if(el('tailorBtn2'))setBtn('tailorBtn2','tailorSpin2','tailorLabel2',true,'Optimizing...','✦ Auto-tailor entire resume to this role');
+  try{
+    const expCtx=S.experience.map((e,i)=>`[${i}] ${e.title} at ${e.company}: ${e.bullets}`).join('\n');
+    const txt=await callClaude([{role:'user',content:`You are optimising a resume for this exact role. Make it score 90+/100 on ATS while being compelling to human recruiters.\n\nJOB DESCRIPTION:\n${S.jd||S.jdKeywords.join(', ')}\n\nCURRENT RESUME:\nTitle: ${S.basics.title}\nSummary: ${S.summary}\nExperience:\n${expCtx}\nSkills: ${S.skills.join(', ')}\nSeniority target: ${S.jdSeniority}\n\nInstructions:\n1. Summary: 3-4 sentence power summary that mirrors the job title, includes top 5 keywords naturally, opens with strongest credential\n2. Bullets: rewrite ALL bullets to be achievement-focused, start with strong verbs, include metrics (invent plausible ones if missing), weave in job keywords\n3. Skills: comprehensive list of 15-20 skills perfectly aligned to the job, mix technical + soft\n4. Title: exact headline that mirrors the job title\n\nReturn ONLY this JSON:\n{\n  "headline": "exact job-aligned title",\n  "summary": "optimised 3-4 sentence summary",\n  "skills": ["skill1","skill2",...],\n  "experience": [{"index":0,"title":"keep or improve","bullets":"bullet1\\nbullet2\\n..."},{"index":1,...}]\n}`}],SYS_ATS,3000);
+    const d=parseJSON(txt);
+    if(d){
+      if(d.headline)S.basics.title=d.headline;
+      if(d.summary)S.summary=d.summary;
+      if(d.skills)S.skills=d.skills;
+      if(d.experience)d.experience.forEach(e=>{if(S.experience[e.index]){S.experience[e.index].bullets=e.bullets;if(e.title)S.experience[e.index].title=e.title;}});
+      toast('✓ Resume fully optimised for ATS!');
+      renderAll();switchRight('ats');
+    }else toast('Optimisation failed. Try again.','error');
+  }catch(e){toast('Failed. Try again.','error');}
+  setBtn('optimizeBtn','optimizeSpin','optimizeLabel',false,'','✦ Full Optimize');
+  if(el('tailorBtn2'))setBtn('tailorBtn2','tailorSpin2','tailorLabel2',false,'','✦ Auto-tailor entire resume to this role');
+}
+
+async function aiWriteSummary(){
+  setBtn('sumBtn','sumSpin','sumLabel',true,'Writing...','✦ Write with AI');
+  try{
+    const expCtx=S.experience.map(e=>`${e.title} at ${e.company}: ${e.bullets}`).join('\n');
+    const txt=await callClaude([{role:'user',content:`Write a powerful professional resume summary.\nTitle: ${S.basics.title||S.jdRole}\nExperience: ${expCtx}\nReturn ONLY the summary text (3-4 sentences). No preamble.`}],SYS_ATS,500);
+    S.summary=txt.trim();
+    const a=el('sumArea');if(a)a.value=S.summary;
+    renderRight();
+  }catch(e){toast('Failed','error');}
+  setBtn('sumBtn','sumSpin','sumLabel',false,'','✦ Write with AI');
+}
+
+async function aiTailorSummary(){
+  setBtn('sumJDBtn','sumJDSpin','sumJDLabel',true,'Tailoring...','✦ Tailor to job description');
+  try{
+    const expCtx=S.experience.map(e=>`${e.title} at ${e.company}: ${e.bullets}`).join('\n');
+    const txt=await callClaude([{role:'user',content:`Write a 3-4 sentence ATS-optimised professional summary for this candidate applying to this role.\n\nJob: ${S.jdRole} ${S.jdSeniority?'('+S.jdSeniority+')':''}\nTop keywords to include naturally: ${S.jdKeywords.slice(0,8).join(', ')}\nSoft skills to weave in: ${S.jdSoftSkills.slice(0,3).join(', ')}\nExperience: ${expCtx}\nCurrent summary: ${S.summary}\n\nRules: Open with strongest credential, mirror job title, include top 3 hard keywords naturally, close with value proposition. Return ONLY the summary text.`}],SYS_ATS,500);
+    S.summary=txt.trim();
+    const a=el('sumArea');if(a)a.value=S.summary;
+    renderRight();toast('✓ Summary tailored');
+  }catch(e){toast('Failed','error');}
+  setBtn('sumJDBtn','sumJDSpin','sumJDLabel',false,'','✦ Tailor to job description');
+}
+
+async function aiEnhanceBullets(i){
+  const e=S.experience[i];
+  const idleTxt=S.jd?'✦ Enhance & align to job':'✦ Enhance bullets with AI';
+  setBtn(`bulBtn${i}`,`bulSpin${i}`,`bulLabel${i}`,true,'Enhancing...',idleTxt);
+  try{
+    const kwCtx=S.jdKeywords.length?`\nJob keywords to weave in naturally: ${S.jdKeywords.join(', ')}\nSeniority: ${S.jdSeniority}`:''
+    const bulletLines=e.bullets.split('\n').filter(l=>l.trim()).length||3;
+    const txt=await callClaude([{role:'user',content:`Rewrite these resume bullets for ${e.title} at ${e.company} to be ATS-optimised and recruiter-compelling.${kwCtx}\n\nCurrent bullets:\n${e.bullets||'(none provided)'}\n\nRules:\n- Keep exactly ${Math.max(3,bulletLines)} bullets\n- Start each with a powerful action verb (Led, Built, Drove, Generated, etc.)\n- Include specific metrics (%, $, x improvement, team size, timeframe)\n- Weave in job keywords naturally\n- Show business impact, not just tasks\n- No weak openers: "Responsible for", "Helped", "Worked on"\n\nReturn ONLY the bullets, one per line, no dashes or numbers.`}],SYS_ATS,600);
+    S.experience[i].bullets=txt.trim();
+    renderAll();toast('✓ Bullets enhanced');
+  }catch(e){toast('Failed','error');}
+  setBtn(`bulBtn${i}`,`bulSpin${i}`,`bulLabel${i}`,false,'',idleTxt);
+}
+
+async function aiSuggestSkills(){
+  const idleTxt=S.jd?'✦ Suggest skills aligned to job':'✦ Suggest skills from experience';
+  setBtn('skBtn','skSpin','skLabel',true,'Generating...',idleTxt);
+  try{
+    const expCtx=S.experience.map(e=>`${e.title}: ${e.bullets}`).join('; ');
+    const kwCtx=S.jdKeywords.length?`\nMust include these job keywords where truthful: ${S.jdKeywords.join(', ')}\nSoft skills to include: ${S.jdSoftSkills.join(', ')}`:'';
+    const txt=await callClaude([{role:'user',content:`Suggest 18-22 skills for a resume based on:\nTitle: ${S.basics.title||S.jdRole}\nExperience: ${expCtx}${kwCtx}\n\nReturn ONLY a JSON array of skill strings. Mix: technical skills, tools, methodologies, soft skills. Order: most relevant first.`}],SYS_ATS,400);
+    const arr=parseJSON(txt);
+    if(Array.isArray(arr))arr.forEach(s=>{if(!S.skills.includes(s))S.skills.push(s);});
+    renderAll();toast(`✓ Skills added`);
+  }catch(e){toast('Failed','error');}
+  setBtn('skBtn','skSpin','skLabel',false,'',idleTxt);
+}
+
+// ═══════════════════════════════════════════════
+//  INIT
+// ═══════════════════════════════════════════════
+renderAll();
+</script>
+</body>
+</html>
